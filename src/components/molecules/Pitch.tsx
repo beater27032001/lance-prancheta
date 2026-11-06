@@ -1,5 +1,7 @@
 'use client'
 
+import { useRef, type PointerEvent } from 'react'
+
 import { Token } from '@atoms/Token'
 import { ENTITIES, type Point } from '@domain/tactics'
 import type { Playback } from '@hooks/usePlayback'
@@ -9,7 +11,18 @@ import { StepCaption } from './StepCaption'
 
 const points = (list: Point[]) => list.map((p) => p.join(',')).join(' ')
 
+const clamp = (v: number) => Math.max(0, Math.min(100, v))
+
 export function Pitch({ pb }: { pb: Playback }) {
+  const field = useRef<HTMLDivElement>(null)
+  // pixels do ponteiro → porcentagem do campo
+  const dragTo = (id: string) => (e: PointerEvent) => {
+    const r = field.current!.getBoundingClientRect()
+    pb.drag(id, [
+      clamp(((e.clientX - r.left) / r.width) * 100),
+      clamp(((e.clientY - r.top) / r.height) * 100),
+    ])
+  }
   const step = pb.active >= 0 ? pb.steps[pb.active] : null
   const inMotion = step && pb.time < step.end
 
@@ -26,7 +39,10 @@ export function Pitch({ pb }: { pb: Playback }) {
   ]
 
   return (
-    <div className="relative aspect-[105/68] w-full overflow-hidden rounded-lg bg-[repeating-linear-gradient(90deg,var(--color-grass-1)_0_9.52%,var(--color-grass-2)_9.52%_19.04%)] shadow-[0_20px_50px_-20px_rgb(0_0_0/.8)]">
+    <div
+      ref={field}
+      className="relative aspect-[105/68] w-full overflow-hidden rounded-lg bg-[repeating-linear-gradient(90deg,var(--color-grass-1)_0_9.52%,var(--color-grass-2)_9.52%_19.04%)] shadow-[0_20px_50px_-20px_rgb(0_0_0/.8)]"
+    >
       <PitchMarkings />
       <svg
         viewBox="0 0 100 100"
@@ -61,6 +77,7 @@ export function Pitch({ pb }: { pb: Playback }) {
           moving={Boolean(inMotion && step.moves[id] && id !== 'ball')}
           draggable={!pb.playing}
           settling={pb.settling}
+          onDrag={dragTo(id)}
         />
       ))}
       <StepCaption pb={pb} />

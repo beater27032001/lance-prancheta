@@ -14,7 +14,7 @@ interface Props {
   moving: boolean
   draggable: boolean
   settling: boolean
-  onPointerDown?: (e: PointerEvent<HTMLDivElement>) => void
+  onDrag: (e: PointerEvent<HTMLDivElement>) => void
 }
 
 const LABEL = { h: 'Time da casa', a: 'Adversário' } as const
@@ -27,7 +27,7 @@ export function Token({
   moving,
   draggable,
   settling,
-  onPointerDown,
+  onDrag,
 }: Props) {
   const isBall = id === 'ball'
   const side = id[0] as 'h' | 'a'
@@ -37,7 +37,14 @@ export function Token({
       role={isBall ? undefined : 'img'}
       aria-label={isBall ? undefined : `${LABEL[side]} ${number}`}
       aria-hidden={isBall || undefined}
-      onPointerDown={onPointerDown}
+      onPointerDown={(e) => {
+        if (!draggable) return
+        e.currentTarget.setPointerCapture(e.pointerId)
+        e.preventDefault()
+      }}
+      onPointerMove={(e) => {
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) onDrag(e)
+      }}
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{
