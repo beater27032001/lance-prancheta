@@ -7,7 +7,6 @@ import { ENTITIES, type Point } from '@domain/tactics'
 import type { Playback } from '@hooks/usePlayback'
 
 import { PitchMarkings } from './PitchMarkings'
-import { StepCaption } from './StepCaption'
 
 const points = (list: Point[]) => list.map((p) => p.join(',')).join(' ')
 
@@ -80,7 +79,6 @@ export function Pitch({ pb }: { pb: Playback }) {
           onDrag={dragTo(id)}
         />
       ))}
-      <StepCaption pb={pb} />
     </div>
   )
 }

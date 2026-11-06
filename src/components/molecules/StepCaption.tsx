@@ -8,10 +8,11 @@ import type { Playback } from '@hooks/usePlayback'
 /** Narração do passo atual sobre o campo, para quem não está olhando a lista. */
 export function StepCaption({ pb }: { pb: Playback }) {
   const step = pb.active >= 0 ? pb.play.steps[pb.active] : null
+  // no celular fica abaixo do campo (sobre ele cobriria os jogadores); nas telas maiores, sobre o campo
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none absolute inset-x-2 bottom-2 z-30 sm:inset-x-3 sm:bottom-3"
+      className="pointer-events-none mt-2 h-9 sm:absolute sm:inset-x-3 sm:bottom-3 sm:z-30 sm:mt-0 sm:h-auto"
     >
       <AnimatePresence mode="wait">
         {step && (

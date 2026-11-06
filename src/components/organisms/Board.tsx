@@ -3,6 +3,7 @@
 import { usePlayback } from '@hooks/usePlayback'
 import { Pitch } from '@molecules/Pitch'
 import { PlayList } from '@molecules/PlayList'
+import { StepCaption } from '@molecules/StepCaption'
 import { StepList } from '@molecules/StepList'
 import { Transport } from '@molecules/Transport'
 
@@ -14,7 +15,10 @@ export function Board() {
   return (
     <div className="grid items-start gap-[22px] lg:grid-cols-[minmax(0,1fr)_340px]">
       <div className="min-w-0">
-        <Pitch pb={pb} />
+        <div className="relative">
+          <Pitch pb={pb} />
+          <StepCaption pb={pb} />
+        </div>
         <Transport pb={pb} />
         <p className="mt-2 mb-0 text-[13px] text-muted">
           Pausado, dá para arrastar qualquer jogador. Play recomeça do ponto da
